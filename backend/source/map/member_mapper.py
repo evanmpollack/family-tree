@@ -1,14 +1,16 @@
-from pandas import isna
+def _map_partner_of(df):
+    SOURCE_ID = ('Partner_Of', 'sourceId')
+    DESTINATION_ID = ('Partner_Of', 'destinationId')
+    df[SOURCE_ID] = df[('Member', 'full_name')]
+    df[DESTINATION_ID] = df[('Member', 'partners')].str.split(',')
+    tempDf = df[[SOURCE_ID, DESTINATION_ID]] \
+        .explode(DESTINATION_ID, ignore_index=True) \
+        .dropna(subset=[DESTINATION_ID]) \
+        .reset_index(drop=True)
+    df[SOURCE_ID] = tempDf[SOURCE_ID]
+    df[DESTINATION_ID] = tempDf[DESTINATION_ID]
+    return df
 
-def _map_partner_of(row):
-    if isna(row[('Member', 'partners')]):
-        return row
-    
-    # TODO: Fix bug that only writes the last partner -- need to explode based on split
-    for partner in row[('Member', 'partners')].split(','):
-        row[('Partner_Of', 'sourceId')] = row[('Member', 'full_name')]
-        row[('Partner_Of', 'destinationId')] = partner
-    return row
 
 def _map_child_of(row):
     row[('Child_Of', 'childId')] = row[('Member', 'full_name')]
@@ -18,5 +20,5 @@ def _map_child_of(row):
 
 def map_member_fields(df):
     return df.astype('string') \
-        .apply(_map_partner_of, axis=1) \
+        .pipe(_map_partner_of) \
         .apply(_map_child_of, axis=1)
