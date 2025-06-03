@@ -3,7 +3,6 @@ from pathlib import Path
 from map.location_mapper import map_location_fields
 from map.member_mapper import map_member_fields
 
-
 FILE_NAME = 'source.xlsx'
 SOURCE_PATH = (Path(__file__).parent / FILE_NAME).resolve()
 A_SHEET = 'A'
