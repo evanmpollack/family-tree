@@ -6,9 +6,9 @@ if [ $(id -u) -ne 0 ]; then
 fi
 
 CONTAINER_NAME="family_tree_db"
-STATE=$(docker container ls -a -f "name=$CONTAINER_NAME" --format "{{.State}}")
+state=$(docker container ls -a -f "name=$CONTAINER_NAME" --format "{{.State}}")
 
-if [ "$STATE" == "exited" -o "$STATE" == "created" -o "$STATE" == "dead" ]; then
+if [ ! "$state" -o "$state" == "exited" -o "$state" == "created" -o "$state" == "dead" ]; then
     echo "Database not running."
     exit 0
 fi
