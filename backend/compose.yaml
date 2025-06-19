@@ -1,0 +1,15 @@
+services:
+  database:
+    image: neo4j:latest
+    ports:
+      - 7474:7474
+      - 7687:7687
+    volumes:
+      - ./database/conf:/conf
+      - ./database/data:/data
+      - ./database/import:/import
+      - ./database/logs:/logs
+      - ./database/plugins:/plugins
+    environment:
+      - NEO4J_PLUGINS=["apoc","apoc-extended"]
+      - apoc.import.file.enabled=true
